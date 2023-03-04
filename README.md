@@ -19,9 +19,10 @@ amongst other skills.
 
 ## Details
 
-**Name**: Your name should appear here
+**Name**: Prasiddha Khadka
 
-**Your userid**: e.g., myname01
+**Birkbeck userid**: pkhadk01
+**Github username**: prasida767
 
 Please do not forget to complete this part as too often we have "orphaned" repositories,
 which can require months to sort out.
