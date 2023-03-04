@@ -5,8 +5,7 @@ import sml.instruction.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 import static sml.Registers.Register;
 
@@ -72,6 +71,35 @@ public final class Translator {
                 String s = scan();
                 return new AddInstruction(label, Register.valueOf(r), Register.valueOf(s));
             }
+            case SubtractInstruction.OP_CODE -> {
+                String r = scan();
+                String s = scan();
+                return new SubtractInstruction(label, Register.valueOf(r), Register.valueOf(s));
+            }
+            case MultiplyInstruction.OP_CODE -> {
+                String r = scan();
+                String s = scan();
+                return new MultiplyInstruction(label, Register.valueOf(r), Register.valueOf(s));
+            }
+            case DivideInstruction.OP_CODE -> {
+                String r = scan();
+                String s = scan();
+                return new DivideInstruction(label, Register.valueOf(r), Register.valueOf(s));
+            }
+            case MoveInstruction.OP_CODE -> {
+                String r = scan();
+                String s = scan();
+                return new MoveInstruction(label, Register.valueOf(r), Integer.valueOf(s));
+            }
+            case JumpInstruction.OP_CODE -> {
+                String r = scan();
+                String s = scan();
+                return new JumpInstruction(label, Register.valueOf(r), s);
+            }
+            case OutputInstruction.OP_CODE -> {
+                String r = scan();
+                return new OutputInstruction(label, Register.valueOf(r));
+            }
 
             // TODO: add code for all other types of instructions
 
@@ -80,12 +108,61 @@ public final class Translator {
             // TODO: Next, use dependency injection to allow this machine class
             //       to work with different sets of opcodes (different CPUs)
 
-            default -> {
-                System.out.println("Unknown instruction: " + opcode);
-            }
+            default -> System.out.println("Unknown instruction: " + opcode);
         }
         return null;
     }
+
+    //Commented Reflection API use.
+//    private Instruction getInstruction(String label) {
+//        if (line.isEmpty())
+//            return null;
+//
+//        String opcode = scan();
+//        String registerDetail = scan();
+//        String parameter = scan();
+//
+//        Properties properties = new Properties();
+//        try{
+//            try(var instructionKeyValue = Translator.class.getResourceAsStream("/beans.properties")){
+//                properties.load(instructionKeyValue);
+//            } catch (IOException e) {
+//                throw new RuntimeException(e);
+//            }
+//            String instructionClass = properties.getProperty(opcode + ".class");
+//            System.out.println("instructionClass = " + instructionClass);
+//            return newInstanceOf(instructionClass, label, registerDetail, parameter);
+//        }catch (ClassNotFoundException | NoSuchMethodException | InvocationTargetException | InstantiationException |
+//                IllegalAccessException e){
+//            System.out.println("e = " + e);
+//        }
+//        return null;
+//    }
+//
+//    private Instruction newInstanceOf(String classToInstantiate, String label, String registerDetail, String parameter) throws ClassNotFoundException, NoSuchMethodException,
+//            InvocationTargetException, InstantiationException, IllegalAccessException, ExceptionInInitializerError {
+//        Class<?> instructionClass = Class.forName(classToInstantiate);
+//
+//        Constructor<?> instructionClassCons = instructionClass.getConstructors()[0];
+//        System.out.println("instructionClassCons = " + instructionClassCons);
+//
+//        Parameter[] paramType = instructionClassCons.getParameters();
+//        System.out.println("paramType ==========>>> " + Arrays.toString(paramType));
+//        List<Object> list = new LinkedList<>();
+//        list.add(label);
+//        for(Parameter param : paramType){
+//            System.out.println("param =======>>> " + param);
+//            if(param.getType().getName().equals("sml.RegisterName")){
+//                list.add(Register.valueOf(registerDetail));
+//            } else if(param.getType().getName().equals("java.lang.Integer")){
+//                list.add(Integer.parseInt(parameter));
+//            } else{
+//                list.add(registerDetail);
+//            }
+//        }
+//        return (Instruction) instructionClassCons.newInstance(list.toArray());
+//
+//    }
 
 
     private String getLabel() {

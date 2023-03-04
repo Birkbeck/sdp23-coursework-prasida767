@@ -4,10 +4,17 @@ import sml.Instruction;
 import sml.Machine;
 import sml.RegisterName;
 
-// TODO: write a JavaDoc for the class
+import java.util.Objects;
+
+// TODO: write a JavaDoc for the class -> Completed
 
 /**
- * @author
+ * It adds the values of two registers and stores the result in a specified register.
+ * The result register is the destination register, and the source register contains the second operand.
+ * The instruction takes three parameters: a label, a destination register, and a source register.
+ * This class inherits from the abstract Instruction class and implements the execute method
+ * to perform the addition operation on the given registers in the Machine instance.
+ * @author prasida767
  */
 
 public class AddInstruction extends Instruction {
@@ -33,5 +40,20 @@ public class AddInstruction extends Instruction {
 	@Override
 	public String toString() {
 		return getLabelString() + getOpcode() + " " + result + " " + source;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(label, result, source);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) return true;
+		if (obj == null || getClass() != obj.getClass()) return false;
+		AddInstruction other = (AddInstruction) obj;
+		return Objects.equals(this.label, other.label)
+				&& Objects.equals(result, other.result)
+				&& Objects.equals(source, other.source);
 	}
 }

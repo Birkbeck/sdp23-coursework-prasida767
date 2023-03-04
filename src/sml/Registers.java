@@ -5,15 +5,18 @@ import java.util.stream.Collectors;
 
 // TODO: write a JavaDoc for the class
 
-/**
+/** This class represents the sets of Registers during a program execution.
+ * In total there are 8 registers that are responsible to carry out the program execution.
+ * It contains methods for setting and getting register values, clearing all register values, and checking equality between two Registers objects.
+ * Note: The Registers class is immutable, meaning that once created, its contents cannot be changed.
  *
- * @author ...
+ * @author prasida767
  */
 public final class Registers {
     private final Map<Register, Integer> registers = new HashMap<>();
 
     public enum Register implements RegisterName {
-        EAX, EBX, ECX, EDX, ESP, EBP, ESI, EDI;
+        EAX, EBX, ECX, EDX, ESP, EBP, ESI, EDI
     }
 
     public Registers() {
@@ -45,14 +48,12 @@ public final class Registers {
         return registers.get((Register)register);
     }
 
-    // TODO: use pattern matching for instanceof
+    // TODO: use pattern matching for instanceof -> Completed
     // https://docs.oracle.com/en/java/javase/14/language/pattern-matching-instanceof-operator.html
     @Override
     public boolean equals(Object o) {
-        if (o instanceof Registers) {
-            Registers other = (Registers) o;
+        if (o instanceof Registers other)
             return registers.equals(other.registers);
-        }
         return false;
     }
 
