@@ -1,9 +1,10 @@
 package sml;
 
-import sml.instruction.*;
-
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Parameter;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
@@ -60,109 +61,105 @@ public final class Translator {
      * The input line should consist of a single SML instruction,
      * with its label already removed.
      */
-    private Instruction getInstruction(String label) {
-        if (line.isEmpty())
-            return null;
-
-        String opcode = scan();
-        switch (opcode) {
-            case AddInstruction.OP_CODE -> {
-                String r = scan();
-                String s = scan();
-                return new AddInstruction(label, Register.valueOf(r), Register.valueOf(s));
-            }
-            case SubtractInstruction.OP_CODE -> {
-                String r = scan();
-                String s = scan();
-                return new SubtractInstruction(label, Register.valueOf(r), Register.valueOf(s));
-            }
-            case MultiplyInstruction.OP_CODE -> {
-                String r = scan();
-                String s = scan();
-                return new MultiplyInstruction(label, Register.valueOf(r), Register.valueOf(s));
-            }
-            case DivideInstruction.OP_CODE -> {
-                String r = scan();
-                String s = scan();
-                return new DivideInstruction(label, Register.valueOf(r), Register.valueOf(s));
-            }
-            case MoveInstruction.OP_CODE -> {
-                String r = scan();
-                String s = scan();
-                return new MoveInstruction(label, Register.valueOf(r), Integer.valueOf(s));
-            }
-            case JumpInstruction.OP_CODE -> {
-                String r = scan();
-                String s = scan();
-                return new JumpInstruction(label, Register.valueOf(r), s);
-            }
-            case OutputInstruction.OP_CODE -> {
-                String r = scan();
-                return new OutputInstruction(label, Register.valueOf(r));
-            }
-
-            // TODO: add code for all other types of instructions
-
-            // TODO: Then, replace the switch by using the Reflection API
-
-            // TODO: Next, use dependency injection to allow this machine class
-            //       to work with different sets of opcodes (different CPUs)
-
-            default -> System.out.println("Unknown instruction: " + opcode);
-        }
-        return null;
-    }
-
-    //Commented Reflection API use.
 //    private Instruction getInstruction(String label) {
 //        if (line.isEmpty())
 //            return null;
 //
 //        String opcode = scan();
-//        String registerDetail = scan();
-//        String parameter = scan();
-//
-//        Properties properties = new Properties();
-//        try{
-//            try(var instructionKeyValue = Translator.class.getResourceAsStream("/beans.properties")){
-//                properties.load(instructionKeyValue);
-//            } catch (IOException e) {
-//                throw new RuntimeException(e);
+//        switch (opcode) {
+//            case AddInstruction.OP_CODE -> {
+//                String r = scan();
+//                String s = scan();
+//                return new AddInstruction(label, Register.valueOf(r), Register.valueOf(s));
 //            }
-//            String instructionClass = properties.getProperty(opcode + ".class");
-//            System.out.println("instructionClass = " + instructionClass);
-//            return newInstanceOf(instructionClass, label, registerDetail, parameter);
-//        }catch (ClassNotFoundException | NoSuchMethodException | InvocationTargetException | InstantiationException |
-//                IllegalAccessException e){
-//            System.out.println("e = " + e);
+//            case SubtractInstruction.OP_CODE -> {
+//                String r = scan();
+//                String s = scan();
+//                return new SubtractInstruction(label, Register.valueOf(r), Register.valueOf(s));
+//            }
+//            case MultiplyInstruction.OP_CODE -> {
+//                String r = scan();
+//                String s = scan();
+//                return new MultiplyInstruction(label, Register.valueOf(r), Register.valueOf(s));
+//            }
+//            case DivideInstruction.OP_CODE -> {
+//                String r = scan();
+//                String s = scan();
+//                return new DivideInstruction(label, Register.valueOf(r), Register.valueOf(s));
+//            }
+//            case MoveInstruction.OP_CODE -> {
+//                String r = scan();
+//                String s = scan();
+//                return new MoveInstruction(label, Register.valueOf(r), Integer.valueOf(s));
+//            }
+//            case JumpInstruction.OP_CODE -> {
+//                String r = scan();
+//                String s = scan();
+//                return new JumpInstruction(label, Register.valueOf(r), s);
+//            }
+//            case OutputInstruction.OP_CODE -> {
+//                String r = scan();
+//                return new OutputInstruction(label, Register.valueOf(r));
+//            }
+//
+//            // TODO: add code for all other types of instructions
+//
+//            // TODO: Then, replace the switch by using the Reflection API
+//
+//            // TODO: Next, use dependency injection to allow this machine class
+//            //       to work with different sets of opcodes (different CPUs)
+//
+//            default -> System.out.println("Unknown instruction: " + opcode);
 //        }
 //        return null;
 //    }
-//
-//    private Instruction newInstanceOf(String classToInstantiate, String label, String registerDetail, String parameter) throws ClassNotFoundException, NoSuchMethodException,
-//            InvocationTargetException, InstantiationException, IllegalAccessException, ExceptionInInitializerError {
-//        Class<?> instructionClass = Class.forName(classToInstantiate);
-//
-//        Constructor<?> instructionClassCons = instructionClass.getConstructors()[0];
-//        System.out.println("instructionClassCons = " + instructionClassCons);
-//
-//        Parameter[] paramType = instructionClassCons.getParameters();
-//        System.out.println("paramType ==========>>> " + Arrays.toString(paramType));
-//        List<Object> list = new LinkedList<>();
-//        list.add(label);
-//        for(Parameter param : paramType){
-//            System.out.println("param =======>>> " + param);
-//            if(param.getType().getName().equals("sml.RegisterName")){
-//                list.add(Register.valueOf(registerDetail));
-//            } else if(param.getType().getName().equals("java.lang.Integer")){
-//                list.add(Integer.parseInt(parameter));
-//            } else{
-//                list.add(registerDetail);
-//            }
-//        }
-//        return (Instruction) instructionClassCons.newInstance(list.toArray());
-//
-//    }
+
+    private Instruction getInstruction(String label) {
+        if (line.isEmpty())
+            return null;
+
+        String opcode = scan();
+        String registerDetail = scan();
+        String parameter = scan();
+
+        Properties properties = new Properties();
+        try{
+            try(var instructionKeyValue = Translator.class.getResourceAsStream("/beans.properties")){
+                properties.load(instructionKeyValue);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            String instructionClass = properties.getProperty(opcode + ".class");
+            return newInstanceOf(instructionClass, label, registerDetail, parameter);
+        }catch (ClassNotFoundException | NoSuchMethodException | InvocationTargetException | InstantiationException |
+                IllegalAccessException e){
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private Instruction newInstanceOf(String classToInstantiate, String label, String registerDetail, String parameter) throws ClassNotFoundException, NoSuchMethodException,
+            InvocationTargetException, InstantiationException, IllegalAccessException, ExceptionInInitializerError {
+        Class<?> instructionClass = Class.forName(classToInstantiate);
+
+        Constructor<?> instructionClassCons = instructionClass.getConstructors()[0];
+
+        Parameter[] paramType = instructionClassCons.getParameters();
+        List<Object> paramList = new LinkedList<>();
+        paramList.add(label);
+        if(paramType[1].getType().getName().equals("sml.RegisterName") ){
+            paramList.add(Register.valueOf(registerDetail));
+            if(paramType.length>2) {
+                if (paramType[2].getType().getName().equals("sml.RegisterName"))
+                    paramList.add(Register.valueOf(parameter));
+                else if (paramType[2].getType().getName().equals("java.lang.Integer"))
+                    paramList.add(Integer.parseInt(parameter));
+                else if (paramType[2].getType().getName().equals("java.lang.String"))
+                    paramList.add(String.valueOf(parameter));
+            }
+        }
+        return (Instruction) instructionClassCons.newInstance(paramList.toArray());
+    }
 
 
     private String getLabel() {
