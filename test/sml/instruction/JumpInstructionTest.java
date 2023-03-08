@@ -7,9 +7,9 @@ import org.junit.jupiter.api.Test;
 import sml.Instruction;
 import sml.Labels;
 import sml.Machine;
-import sml.Registers;
+import sml.register.Registers;
 
-import static sml.Registers.Register.EAX;
+import static sml.register.Registers.Register.EAX;
 
 public class JumpInstructionTest {
     private Machine machine;
@@ -17,7 +17,7 @@ public class JumpInstructionTest {
 
     @BeforeEach
     void setUp() {
-        machine = new Machine(new Registers());
+        machine = new Machine(Registers.getRegisterInstance());
         labels = machine.getLabels();
         //...
     }

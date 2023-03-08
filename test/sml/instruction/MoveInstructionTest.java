@@ -6,9 +6,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import sml.Instruction;
 import sml.Machine;
-import sml.Registers;
+import sml.register.Registers;
 
-import static sml.Registers.Register.EAX;
+import static sml.register.Registers.Register.EAX;
 
 public class MoveInstructionTest {
     private Machine machine;
@@ -16,7 +16,7 @@ public class MoveInstructionTest {
 
     @BeforeEach
     void setUp() {
-        machine = new Machine(new Registers());
+        machine = new Machine(Registers.getRegisterInstance());
         registers = machine.getRegisters();
         //...
     }

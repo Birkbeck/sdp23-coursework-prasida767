@@ -1,5 +1,8 @@
 package sml;
 
+import sml.register.Registers;
+import sml.translator.Translator;
+
 import java.io.IOException;
 
 public class Main {
@@ -16,7 +19,7 @@ public class Main {
 
 		try {
 			Translator t = new Translator(args[0]);
-			Machine m = new Machine(new Registers());
+			Machine m = new Machine(Registers.getRegisterInstance());
 			t.readAndTranslate(m.getLabels(), m.getProgram());
 
 			System.out.println("Here is the program; it has " + m.getProgram().size() + " instructions.");
@@ -30,6 +33,8 @@ public class Main {
 		}
 		catch (IOException e) {
 			System.out.println("Error reading the program from " + args[0]);
+		}catch (RuntimeException e){
+			System.out.println("There was an error during program translation. Cause by = " + e.getMessage());
 		}
 	}
 }

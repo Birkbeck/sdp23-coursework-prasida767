@@ -1,5 +1,8 @@
 package sml;
 
+import sml.instruction.JumpInstruction;
+import sml.register.Registers;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -33,15 +36,24 @@ public final class Machine {
 	 * Execute the program in program, beginning at instruction 0.
 	 * Precondition: the program and its labels have been stored properly.
 	 */
-	public void execute() {
+	public void execute() throws RuntimeException{
 		programCounter = 0;
 		registers.clear();
+		checkEdgeCases();
 		while (programCounter < program.size()) {
 			Instruction ins = program.get(programCounter);
 			int programCounterUpdate = ins.execute(this);
 			programCounter = (programCounterUpdate == NORMAL_PROGRAM_COUNTER_UPDATE)
 					? programCounter + 1
 					: programCounterUpdate;
+		}
+	}
+
+	public void checkEdgeCases(){
+		if(program.size()>0 && program.get(program.size() - 1) instanceof JumpInstruction){
+			throw new RuntimeException("The last statement is jump instruction. " +
+					"Program will run in loop. Remove/Replace the jump instruction.");
+
 		}
 	}
 

@@ -1,4 +1,4 @@
-package sml;
+package sml.register;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -19,7 +19,13 @@ public final class Registers {
         EAX, EBX, ECX, EDX, ESP, EBP, ESI, EDI
     }
 
-    public Registers() {
+    private static final Registers registerInstance = new Registers();
+
+    public static Registers getRegisterInstance(){
+        return registerInstance;
+    }
+
+    private Registers() {
         clear(); // the class is final
     }
 

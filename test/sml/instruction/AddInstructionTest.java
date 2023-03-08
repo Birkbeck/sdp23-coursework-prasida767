@@ -7,9 +7,9 @@ import org.junit.jupiter.api.Test;
 
 import sml.Instruction;
 import sml.Machine;
-import sml.Registers;
+import sml.register.Registers;
 
-import static sml.Registers.Register.*;
+import static sml.register.Registers.Register.*;
 
 class AddInstructionTest {
   private Machine machine;
@@ -17,7 +17,7 @@ class AddInstructionTest {
 
   @BeforeEach
   void setUp() {
-    machine = new Machine(new Registers());
+    machine = new Machine(Registers.getRegisterInstance());
     registers = machine.getRegisters();
     //...
   }

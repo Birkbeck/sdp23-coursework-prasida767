@@ -2,7 +2,7 @@ package sml.instruction;
 
 import sml.Instruction;
 import sml.Machine;
-import sml.RegisterName;
+import sml.register.RegisterName;
 
 import java.util.Objects;
 
